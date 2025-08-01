@@ -1,43 +1,66 @@
+// C++ Program to print level Order
+// traversal of Binary Tree
 #include <bits/stdc++.h>
 using namespace std;
 
 class Node {
-public:
+  public:
     int data;
     Node *left, *right;
 
-    // Constructor to initialize a new node
-    Node(int value) {
-        data = value;
-        left = nullptr;
-        right = nullptr;
+    Node(int key) {
+        data = key;
+        left = nullptr;  
+        right = nullptr; 
     }
 };
 
-void levelOrderRec(Node* root, int level, vector<vector<int>>& res) {
-    // Base case: If node is null, return
-    if (root == nullptr) return;
-
-    // Add a new level to the result if needed
-    if (res.size() <= level)
-        res.push_back({});
-  
-    // Add current node's data to its corresponding level
-    res[level].push_back(root->data);
-
-    // Recur for left and right children
-    levelOrderRec(root->left, level + 1, res);
-    levelOrderRec(root->right, level + 1, res);
+// Print nodes at a given level
+void printGivenLevel(Node *root, int level, vector<int> &levelNodes) {
+    if (root == nullptr)
+        return;
+    if (level == 1) {
+        levelNodes.push_back(root->data);
+    }
+    else if (level > 1) {
+        printGivenLevel(root->left, level - 1, levelNodes);
+        printGivenLevel(root->right, level - 1, levelNodes);
+    }
 }
 
-// Function to perform level order traversal
-vector<vector<int>> levelOrder(Node* root) {
-    // Stores the result level by level
-    vector<vector<int>> res; 
-  
-    levelOrderRec(root, 0, res);
-    return res;
+// Compute the "height" of a tree -- the number of
+// nodes along the longest path from the root node
+// down to the farthest leaf node.
+int height(Node *node) {
+    if (node == nullptr)
+        return 0;
+
+    // Compute the height of each subtree
+    int lheight = height(node->left);
+    int rheight = height(node->right);
+
+    // Use the larger one without the ternary operator
+    if (lheight > rheight) {
+        return lheight + 1;
+    }
+    else {
+        return rheight + 1;
+    }
 }
+
+// Function to return level order traversal as 
+// a vector of vectors
+vector<vector<int>> levelOrder(Node *root) {
+    vector<vector<int>> result;
+    int h = height(root);
+    for (int i = 1; i <= h; i++) {
+        vector<int> levelNodes;
+        printGivenLevel(root, i, levelNodes);
+        result.push_back(levelNodes);
+    }
+    return result;
+}
+
 
 int main() {
     //      5
@@ -66,15 +89,12 @@ int main() {
     root->right->right->left = new Node(8);
     root->right->right->right = new Node(11);
 
-    vector<vector<int>> res = levelOrder(root);
-
-    for (vector<int> level : res) {
-        cout << "[";
-        for (int i = 0; i < level.size(); i++) {
-            cout << level[i];
-            if (i < level.size() - 1) cout << ", ";
+    vector<vector<int>> result = levelOrder(root);
+    for (const auto &level : result) {
+        for (int val : level) {
+            cout << val << "  ";
         }
-        cout << "] ";
+        cout << endl;
     }
 
     return 0;
