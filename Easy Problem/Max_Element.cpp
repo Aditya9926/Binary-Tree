@@ -20,7 +20,6 @@ public:
         this->right = NULL;
     }
 };
-
 // Returns maximum value in a given
 // Binary Tree
 int findMax(Node* root)
