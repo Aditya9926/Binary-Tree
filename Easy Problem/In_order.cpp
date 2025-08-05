@@ -14,19 +14,59 @@ public:
     }
 };
 
-// Inorder Traversal
+//Morris Inorder Treversal
+vector<int> morrisInorderTraversal(Node* root) {
+    vector<int> result;
+    Node* current = root;
+    
+    while (current != NULL) {
+        if (current->left == NULL) {
+            result.push_back(current->data);
+            current = current->right;
+        } else {
+            Node* pre = current->left;
+            while (pre->right != NULL && pre->right != current) {
+                pre = pre->right;
+            }
+            if (pre->right == NULL) {
+                pre->right = current;
+                current = current->left;
+            } else {
+                pre->right = NULL;
+                result.push_back(current->data);
+                current = current->right;
+            }
+        }
+    }
+    return result;
+}
+
+// Stack Inorder Traversal
+vector<int> stackInorderTraversal(Node* root) {
+    vector<int> result;
+    stack<Node*> s;
+    Node* current = root;
+
+    while (current != NULL || !s.empty()) {
+        while (current != NULL) {
+            s.push(current);
+            current = current->left;
+        }
+        current = s.top();
+        s.pop();
+        result.push_back(current->data);
+        current = current->right;
+    }
+    return result;
+}
+
+// Inorder Traversal Recursive
 void printInorder(Node* node)
 {
     if (node == NULL)
         return;
-
-    // Traverse left subtree
     printInorder(node->left);
-
-    // Visit node
     cout << node->data << " ";
-
-    // Traverse right subtree
     printInorder(node->right);
 }
 
@@ -42,8 +82,22 @@ int main()
     root->right->left = new Node(150);
     root->right->right = new Node(300);
 
-    // Function call
-    cout << "Inorder Traversal: ";
+    // Morris Inorder Traversal output
+    vector<int> m = morrisInorderTraversal(root);
+    cout << "Morris Inorder Traversal: ";
+     for (int data : m) {
+        cout << data << " ";
+    }
+    
+    // Stack Inorder Traversal output
+    vector<int> s = stackInorderTraversal(root);
+    cout << "\nStack Inorder Traversal: ";
+    for (int i = 0; i < s.size(); i++) {
+        cout << s[i] << " ";
+    }
+
+    // Recursive Inorder Traversal output
+    cout << "\nInorder Traversal: ";
     printInorder(root);
     return 0;
 }
