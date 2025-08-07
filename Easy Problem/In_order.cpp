@@ -53,7 +53,6 @@ vector<int> stackInorderTraversal(Node* root) {
             current = current->left;
         }
         current = s.top();
-        cout << current ;
         s.pop();
         result.push_back(current->data);
         current = current->right;
